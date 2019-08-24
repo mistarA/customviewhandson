@@ -15,9 +15,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".MainActivity"
+            android:name=".LauncherActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -25,8 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".CircularProgressActivity">
-        </activity>
+        <activity
+            android:name=".CircleViewActivity"
+            android:label="@string/circle_view"/>
+        <activity
+            android:name=".CircularProgressActivity"
+            android:label="@string/success_view"/>
     </application>
 
 </manifest>

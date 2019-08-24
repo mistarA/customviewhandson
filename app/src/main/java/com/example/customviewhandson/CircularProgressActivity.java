@@ -17,7 +17,7 @@ public class CircularProgressActivity extends AppCompatActivity implements View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.circular_progress_activity_main);
+        setContentView(R.layout.activity_circular_progress);
         circularProgressTickView = findViewById(R.id.circular_progress);
         animateButton = findViewById(R.id.animateButton);
         animateButton.setOnClickListener(this);

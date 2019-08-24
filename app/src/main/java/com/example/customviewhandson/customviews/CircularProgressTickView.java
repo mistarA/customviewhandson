@@ -21,10 +21,6 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 public class CircularProgressTickView extends View {
 
-    private static final String PROPERTY_START_ANGLE = "startAngle";
-    private static final String PROPERTY_SWEEP_ANGLE = "sweepAngle";
-    private static final String PROPERTY_PATH_DT = "pathDt";
-    private static final String PROPERTY_ROTATE = "rotate";
     Paint paint;
     int circleRadius;
     int color;
@@ -39,19 +35,19 @@ public class CircularProgressTickView extends View {
     int startAngle;
     int sweepAngle;
     float pathDt;
-    PropertyValuesHolder propertyStartAngle = PropertyValuesHolder.ofInt(PROPERTY_START_ANGLE, 0, 360);
-    PropertyValuesHolder propertySweepAngle = PropertyValuesHolder.ofInt(PROPERTY_SWEEP_ANGLE, 0, 360);
-    PropertyValuesHolder propertyRotate = PropertyValuesHolder.ofInt(PROPERTY_ROTATE, 0, 360);
-    volatile boolean drawTickMark;
-    private Path path;
-    private Path drawingPath;
-    ValueAnimator valueAnimator;
-    private PathMeasure pathMeasure;
-    private float pathLength;
-    private ValueAnimator tickValueAnimator;
     private float startX;
     private float startY;
-    int rotate;
+    volatile boolean drawTickMark;
+    private Path drawingPath;
+    private PathMeasure pathMeasure;
+    private float pathLength;
+    private ValueAnimator valueAnimator;
+    private ValueAnimator tickValueAnimator;
+    private static final int ANIMATION_DURATION = 1500;
+    private static final String PROPERTY_START_ANGLE = "startAngle";
+    private static final String PROPERTY_SWEEP_ANGLE = "sweepAngle";
+    PropertyValuesHolder propertyStartAngle = PropertyValuesHolder.ofInt(PROPERTY_START_ANGLE, 0, 360);
+    PropertyValuesHolder propertySweepAngle = PropertyValuesHolder.ofInt(PROPERTY_SWEEP_ANGLE, 0, 360);
 
 
     public CircularProgressTickView(Context context) {
@@ -75,35 +71,24 @@ public class CircularProgressTickView extends View {
         circleRadius = typedArray.getInt(R.styleable.CircularProgressTickView_radius, 100);
         paint.setColor(color);
         paint.setStrokeWidth(strokeWidth);
-        rectF = new RectF(getLeft(), getTop(), getRight(), getBottom());
+        rectF = new RectF();
         typedArray.recycle();
-    }
-
-    public void startCircleAnimation() {
-        drawTickMark = false;
-        drawingPath.reset();
-        drawingPath.moveTo(startX, startY);
+        tickValueAnimator = ValueAnimator.ofFloat(0, 1);
         valueAnimator = new ValueAnimator();
-        valueAnimator.setValues(propertyStartAngle, propertySweepAngle, propertyRotate);
-        valueAnimator.setDuration(1500);
+        valueAnimator.setValues(propertyStartAngle, propertySweepAngle);
+        valueAnimator.setDuration(ANIMATION_DURATION);
         valueAnimator.setInterpolator(new LinearInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 startAngle = (int) animation.getAnimatedValue(PROPERTY_START_ANGLE);
                 sweepAngle = (int) animation.getAnimatedValue(PROPERTY_SWEEP_ANGLE);
-                rotate = (int) animation.getAnimatedValue(PROPERTY_ROTATE);
                 animation.setRepeatCount(ValueAnimator.INFINITE);
                 animation.setRepeatMode(ValueAnimator.REVERSE);
                 invalidate();
             }
         });
-        valueAnimator.start();
-    }
-
-    private void startTickAnimation() {
-        tickValueAnimator = ValueAnimator.ofFloat(0, 1);
-        tickValueAnimator.setDuration(1500);
+        tickValueAnimator.setDuration(ANIMATION_DURATION);
         tickValueAnimator.setInterpolator(new FastOutSlowInInterpolator());
         tickValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -115,7 +100,33 @@ public class CircularProgressTickView extends View {
                 invalidate();
             }
         });
+    }
+
+    public void startCircleAnimation() {
+        tickValueAnimator.cancel();
+        drawTickMark = false;
+        drawingPath.reset();
+        drawingPath.moveTo(startX, startY);
+        valueAnimator.start();
+    }
+
+
+    public void stopCircleAnimation() {
+        valueAnimator.cancel();
+        drawTickMark = true;
+        startTickAnimation();
+        invalidate();
+    }
+
+    private void startTickAnimation() {
         tickValueAnimator.start();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        valueAnimator.cancel();
+        tickValueAnimator.cancel();
     }
 
     @Override
@@ -134,13 +145,13 @@ public class CircularProgressTickView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         viewWidth = (float) w / 2;
         viewHeight = (float) h / 2;
-        createPath();
+        initViewProperties();
     }
 
     final float[] position = new float[2]; // field
 
-    private void createPath() {
-        path = new Path();
+    private void initViewProperties() {
+        Path path = new Path();
         // 1st Line
         startX = viewWidth - 90;
         startY = viewHeight - 10;
@@ -161,12 +172,5 @@ public class CircularProgressTickView extends View {
         right = viewWidth + circleRadius;
         bottom = viewHeight + circleRadius;
         rectF.set(left, top, right, bottom);
-    }
-
-    public void stopCircleAnimation() {
-        valueAnimator.cancel();
-        drawTickMark = true;
-        startTickAnimation();
-        invalidate();
     }
 }
