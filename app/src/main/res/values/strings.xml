@@ -6,4 +6,7 @@
     <string name="circular_progress_tick_view">Circular Progress Tick View</string>
     <string name="circle_view">Circle View</string>
     <string name="success_view">Success View</string>
+    <string name="uber">Uber</string>
+    <string name="swiggy">Swiggy</string>
+
 </resources>

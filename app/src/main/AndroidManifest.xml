@@ -27,10 +27,10 @@
         </activity>
         <activity
             android:name=".CircleViewActivity"
-            android:label="@string/circle_view"/>
+            android:label="@string/uber"/>
         <activity
             android:name=".CircularProgressActivity"
-            android:label="@string/success_view"/>
+            android:label="@string/swiggy"/>
     </application>
 
 </manifest>
