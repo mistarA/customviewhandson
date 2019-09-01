@@ -148,8 +148,8 @@ public class MyCustomView extends View {
         rightBotY = viewHeight + 10;
         canvas.drawCircle(viewWidth, viewHeight, radius, circlePaint);
 
-        // canvas.rotate(rotate, viewWidth, viewHeight);
-        // canvas.drawLine(viewWidth - 140, viewHeight, viewWidth - 70, viewHeight + 70, linePaint);
-        // canvas.drawLine(viewWidth - lineStart, viewHeight + lineStart, viewWidth + lineCoordinates, viewHeight - lineCoordinates, linePaint);
+        // canvas.rotate(rotate, viewCenterHorizontal, viewCenterVertical);
+        // canvas.drawLine(viewCenterHorizontal - 140, viewCenterVertical, viewCenterHorizontal - 70, viewCenterVertical + 70, linePaint);
+        // canvas.drawLine(viewCenterHorizontal - lineStart, viewCenterVertical + lineStart, viewCenterHorizontal + lineCoordinates, viewCenterVertical - lineCoordinates, linePaint);
     }
 }

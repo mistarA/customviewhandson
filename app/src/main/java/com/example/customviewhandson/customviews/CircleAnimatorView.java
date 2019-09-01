@@ -86,7 +86,7 @@ public class CircleAnimatorView extends View {
         leftTopY = viewHeight - 20;
         rightBotX = viewWidth + 20;
         rightBotY = viewHeight + 20;
-        // canvas.rotate(rotate, viewWidth, viewHeight);
+        // canvas.rotate(rotate, viewCenterHorizontal, viewCenterVertical);
         canvas.drawRoundRect(leftTopX, leftTopY, rightBotX, rightBotY, smallCircleRadius, smallCircleRadius, circlePaint);
     }
 }

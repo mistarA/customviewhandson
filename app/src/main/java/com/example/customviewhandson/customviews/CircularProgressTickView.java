@@ -26,8 +26,8 @@ public class CircularProgressTickView extends View {
     int color;
     int strokeWidth;
     RectF rectF;
-    float viewHeight;
-    float viewWidth;
+    float viewCenterVertical;
+    float viewCenterHorizontal;
     float left;
     float top;
     float right;
@@ -41,7 +41,8 @@ public class CircularProgressTickView extends View {
     private Path drawingPath;
     private PathMeasure pathMeasure;
     private float pathLength;
-    private ValueAnimator valueAnimator;
+    final float[] position = new float[2];
+    private ValueAnimator arcAnimator;
     private ValueAnimator tickValueAnimator;
     private static final int ANIMATION_DURATION = 1500;
     private static final String PROPERTY_START_ANGLE = "startAngle";
@@ -74,11 +75,11 @@ public class CircularProgressTickView extends View {
         rectF = new RectF();
         typedArray.recycle();
         tickValueAnimator = ValueAnimator.ofFloat(0, 1);
-        valueAnimator = new ValueAnimator();
-        valueAnimator.setValues(propertyStartAngle, propertySweepAngle);
-        valueAnimator.setDuration(ANIMATION_DURATION);
-        valueAnimator.setInterpolator(new LinearInterpolator());
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        arcAnimator = new ValueAnimator();
+        arcAnimator.setValues(propertyStartAngle, propertySweepAngle);
+        arcAnimator.setDuration(ANIMATION_DURATION);
+        arcAnimator.setInterpolator(new LinearInterpolator());
+        arcAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 startAngle = (int) animation.getAnimatedValue(PROPERTY_START_ANGLE);
@@ -107,12 +108,12 @@ public class CircularProgressTickView extends View {
         drawTickMark = false;
         drawingPath.reset();
         drawingPath.moveTo(startX, startY);
-        valueAnimator.start();
+        arcAnimator.start();
     }
 
 
     public void stopCircleAnimation() {
-        valueAnimator.cancel();
+        arcAnimator.cancel();
         drawTickMark = true;
         startTickAnimation();
         invalidate();
@@ -125,7 +126,7 @@ public class CircularProgressTickView extends View {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        valueAnimator.cancel();
+        arcAnimator.cancel();
         tickValueAnimator.cancel();
     }
 
@@ -133,7 +134,7 @@ public class CircularProgressTickView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (drawTickMark) {
-            canvas.drawCircle(viewWidth, viewHeight, circleRadius, paint);
+            canvas.drawCircle(viewCenterHorizontal, viewCenterVertical, circleRadius, paint);
             canvas.drawPath(drawingPath, paint);
             return;
         }
@@ -143,23 +144,20 @@ public class CircularProgressTickView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        viewWidth = (float) w / 2;
-        viewHeight = (float) h / 2;
+        viewCenterHorizontal = (float) w / 2;
+        viewCenterVertical = (float) h / 2;
         initViewProperties();
     }
 
-    final float[] position = new float[2]; // field
 
     private void initViewProperties() {
         Path path = new Path();
-        // 1st Line
-        startX = viewWidth - 90;
-        startY = viewHeight - 10;
-        float stopX = viewWidth - 30;
-        float stopY = viewHeight + 40;
-        // 2nd Line
-        float finalStopX = viewWidth + 70;
-        float finalStopY = viewHeight - 70;
+        startX = viewCenterHorizontal - 90;
+        startY = viewCenterVertical - 10;
+        float stopX = viewCenterHorizontal - 30;
+        float stopY = viewCenterVertical + 40;
+        float finalStopX = viewCenterHorizontal + 70;
+        float finalStopY = viewCenterVertical - 70;
         path.moveTo(startX, startY);
         path.lineTo(stopX, stopY);
         path.lineTo(finalStopX, finalStopY);
@@ -167,10 +165,10 @@ public class CircularProgressTickView extends View {
         drawingPath.moveTo(startX, startY);
         pathMeasure = new PathMeasure(path, false);
         pathLength = pathMeasure.getLength();
-        left = viewWidth - circleRadius;
-        top = viewHeight - circleRadius;
-        right = viewWidth + circleRadius;
-        bottom = viewHeight + circleRadius;
+        left = viewCenterHorizontal - circleRadius;
+        top = viewCenterVertical - circleRadius;
+        right = viewCenterHorizontal + circleRadius;
+        bottom = viewCenterVertical + circleRadius;
         rectF.set(left, top, right, bottom);
     }
 }

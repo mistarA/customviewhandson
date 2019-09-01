@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,10 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/circle_view"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_centerInParent="true"
         android:visibility="gone"
         app:widthStroke="4"
         app:radius="150"
@@ -28,12 +25,11 @@
         android:layout_height="wrap_content"
         android:text="@string/start"
         android:id="@+id/id_animate_bv"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/circle_view"
         android:background="@drawable/button_background"
         android:textColor="@color/white"
         android:textSize="@dimen/dimen_button_text_size"
-        android:layout_marginBottom="100dp"/>
+        android:layout_marginTop="50dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
